@@ -13,10 +13,10 @@ public class readCSV {
 	List<marker> markers = null;
   
 	public readCSV(String[] args) {
-	//String file = args[0];
+	String file = args[0];
 	markers = new ArrayList<marker>();
 	int numMarkersToReturn = Integer.parseInt(args[1]);
-	String file = "C:\\Users\\Steven\\Desktop\\Documents\\Visual Studio 2013\\Projects\\heatmap\\heatmap\\Files\\JCProperties.txt";
+	//String file = "C:\\Users\\Steven\\Desktop\\Documents\\Visual Studio 2013\\Projects\\heatmap\\heatmap\\Files\\JCProperties.txt";
 	run(file, numMarkersToReturn);
 	
   }
