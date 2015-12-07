@@ -38,4 +38,6 @@ class marker {
     String  TAX_CODE ;
     String  OBY_IND ;
     String  AssdValue ;
+    String lat;
+    String lon;
 }

@@ -10,10 +10,11 @@ public class main {
 	//String[] arg = {"filename","10"};
 	String[] arg = {filename, numRecs};
 	readCSV list = new readCSV(arg);
-	String test = list.markers.get(0).ADDR_PSPR.toString();
-	System.out.println(test);
-	int count = list.markers.size();
-	System.out.println("Count: " + count);
+	System.out.println("Lat: " + list.markers.get(0).lat.toString());
+	System.out.println("Lon: " + list.markers.get(0).lon.toString());
+	System.out.println(list.markers.size());
+	
+	
 			 
 			
 	}

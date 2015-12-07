@@ -1,17 +1,28 @@
 package heatmap ;
 
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import org.w3c.dom.*;
+import javax.xml.xpath.*;
+import javax.xml.parsers.*;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class readCSV {
 
 	
 	List<marker> markers = null;
-  
+    
 	public readCSV(String[] args) {
 	String file = args[0];
 	markers = new ArrayList<marker>();
@@ -77,10 +88,25 @@ public class readCSV {
 			tempMarker.OBY_IND =lineData[34];
 			tempMarker.AssdValue =lineData[35];			
 			
+			String address = tempMarker.ADDR_PSPR + " " + tempMarker.CITY + " AL " + tempMarker.ZIP;
+			address = URLEncoder.encode(address, "UTF-8");
+			String adrs =  "https://maps.googleapis.com/maps/api/geocode/xml?address="+address+"&sensor=false%22";
+			URL url = new URL(adrs);
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+		    String xmlLatLocation = "//GeocodeResponse/result/geometry/location/lat";
+		    String xmlLonLocation = "//GeocodeResponse/result/geometry/location/lon";
+		    String docText = "";
+		    String s;
+		    while ((s = reader.readLine()) != null)
+		        docText = docText + s;
+		    
+		    tempMarker.lat = getLat(docText);
+		    tempMarker.lon = getLon(docText);
+  
 			markers.add(tempMarker);
 			
+		
 		}
-
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	} catch (IOException e) {
@@ -96,6 +122,64 @@ public class readCSV {
 	}
 
 	System.out.println("Done");
-  }
 
+  
+  } 
+  
+  public String getLat(String xmlDoc) {
+	String results = null;
+	   try {
+	        DocumentBuilderFactory dbf =
+	            DocumentBuilderFactory.newInstance();
+	        DocumentBuilder db = dbf.newDocumentBuilder();
+	        InputSource is = new InputSource();
+	        is.setCharacterStream(new StringReader(xmlDoc));
+
+	        Document doc = db.parse(is);
+	        NodeList nodes = doc.getElementsByTagName("lat");
+
+	        // iterate the employees
+	        for (int i = 0; i < nodes.getLength(); i++) {
+	           Element element = (Element) nodes.item(i);
+	           results = getCharacterDataFromElement(element);
+	        }
+	    }
+	    catch (Exception e) {
+	        e.printStackTrace();
+	    }	  return results;
+  }
+  
+  public String getLon(String xmlDoc) {
+		String results = null;
+		   try {
+		        DocumentBuilderFactory dbf =
+		            DocumentBuilderFactory.newInstance();
+		        DocumentBuilder db = dbf.newDocumentBuilder();
+		        InputSource is = new InputSource();
+		        is.setCharacterStream(new StringReader(xmlDoc));
+
+		        Document doc = db.parse(is);
+		        NodeList nodes = doc.getElementsByTagName("lng");
+
+		        // iterate the employees
+		        for (int i = 0; i < nodes.getLength(); i++) {
+		           Element element = (Element) nodes.item(i);
+		           results = getCharacterDataFromElement(element);
+		        }
+		    }
+		    catch (Exception e) {
+		        e.printStackTrace();
+		    }	  return results;
+	  }
+
+  
+  public static String getCharacterDataFromElement(Element e) {
+	    Node child = e.getFirstChild();
+	    if (child instanceof CharacterData) {
+	       CharacterData cd = (CharacterData) child;
+	       return cd.getData();
+	    }
+	    return "?";
+	  }
 }
+
