@@ -1,3 +1,4 @@
+package heatmap;
 
 /*
  * Copyright (C) 2007 Mark Thomas. All rights reserved.
@@ -19,6 +20,7 @@ import java.util.WeakHashMap;
  * <a href="http://www.ngs.noaa.gov/PC_PROD/SPCS83/">here</a>
  * </p>
  */
+
 public class StatePlaneCoordinates {
 
     private static final double RAD = (180d / Math.PI);
@@ -31,7 +33,25 @@ public class StatePlaneCoordinates {
     private static Map<Integer, double[]> ZONES = new WeakHashMap<Integer, double[]>();
 
     static {
-        // ****     403      California III (LAMBERT CONIC PROJECTION)
+        // ***		101		Alabama East (TRANSVERSION MERCATOR PROJECTION)
+    	ZONES.put(101, new double[] {
+    	          85.5d,                // CENTRAL MERIDIAN (CM) or Origin Longitude (OM)
+    	          200000.0d,            // FALSE EASTING VALUE AT THE CM (METERS)
+    	          30.30d,  				// SOUTHERNMOST PARALLEL or Origin Latitude
+    	          25000d,             	// SCALE FACTOR (converts to 0.99996 )
+    	          0.0d,                 // FALSE NORTHING VALUE AT SOUTHERMOST PARALLEL (METERS)
+    	        });
+    	
+        // ***		102		Alabama West (TRANSVERSION MERCATOR PROJECTION)
+    	ZONES.put(102, new double[] {
+    	          87.3d,                // CENTRAL MERIDIAN (CM) or Origin Longitude (OM)
+    	          600000.0d,            // FALSE EASTING VALUE AT THE CM (METERS)
+    	          30.0d,    			// SOUTHERNMOST PARALLEL or Origin Latitude
+    	          14999.925d,           // SCALE FACTOR (converts to 0.999933333 )
+    	          0.0d,                 // FALSE NORTHING VALUE AT SOUTHERMOST PARALLEL (METERS)
+    	        });
+    	
+    	// ****     403      California III (LAMBERT CONIC PROJECTION)
         ZONES.put(403, new double[] {
           120.5d,               // 120.5D0
           2000000.0001016d,     // 2000000.DO
@@ -212,7 +232,26 @@ public class StatePlaneCoordinates {
         // x and y given in US Survey Feet (3937 yards = 3600 meters)
         final double feet2Meters = 0.3048006096012192d;
 
-        // somewhere in california
+        // Alabama Zone Test East - Dayz
+        System.out.println("101 Alabama East by Dayz");
+        double d5[] = toLatLng(feet2Meters * 695207.685, feet2Meters * 702618.257, 101);   // earthpoint US survey feet
+        //double d5[] = toLatLng(211899.726, 214158.473, 101);    // earthpoint State Plane (meters)
+        System.out.println("lat should be: 32.4315°, and is " + d5[1]);
+        System.out.println("lon should be: 85.7068°,and is " + d5[0]);
+        
+        // Alabama Zone Test West - Dayz
+        System.out.println("102 Alabama West by Dayz");
+        double d6[] = toLatLng(feet2Meters * 2177868.930, feet2Meters * 1282960.678, 102);
+        System.out.println("lat should be: 	33.5250000°, and is " + d6[1]);
+        System.out.println("lon should be: -086.8130000°,and is " + d6[0]);
+        
+        // Testing by Dayz
+        System.out.println("403 California by Dayz");
+        double d4[] = toLatLng(feet2Meters * 7591818.980, feet2Meters * 279038.289, 403);
+        System.out.println("lat should be: 	32.7150000°, and is " + d4[1]);
+        System.out.println("lon should be: -117.1625000°,and is " + d4[0]);
+        
+        /*// somewhere in california
         System.out.println("California");
         double d1[] = toLatLng(feet2Meters * 6351504, feet2Meters * 2153727, 403);
         System.out.println("lat should be 37.9075149470656, and is " + d1[1]);
@@ -238,5 +277,6 @@ public class StatePlaneCoordinates {
         double d3[] = toLatLng(feet2Meters * 2668020.416, feet2Meters * 229201.881, 903);
         System.out.println("lat should be 29.611670, and is " + d3[1]);
         System.out.println("lon should be -82.298584, and is " + d3[0]);
+        */
     }
 }
